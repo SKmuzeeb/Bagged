@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background-color: #faf7f2;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Magazine-style optical sizing for large Fraunces headlines. */
+.font-display {
+  font-feature-settings: 'ss01' 1;
+}
+
+h1.font-display,
+h2.font-display {
+  font-variation-settings: 'opsz' 60;
+}
+
+::selection {
+  background-color: #fcebe5;
+  color: #1a1a1a;
+}
+
+/* Visible, on-brand focus rings for keyboard navigation. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid #e85d3c;
+  outline-offset: 2px;
+}
