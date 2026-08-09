@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { ShoppingBag } from 'lucide-react'
 import { useProducts } from '../hooks/useProducts.js'
 import { useCartStore } from '../store/cartStore.js'
+import { useFavoritesStore } from '../store/favoritesStore.js'
 import { CATEGORIES } from '../data/categories.js'
-import { KIRANA } from '../data/kirana.js'
+import { getKiranaById } from '../data/kiranas.js'
 import { getPickupSlots } from '../lib/pickupSlots.js'
 import { formatClockTime, formatRupees } from '../lib/format.js'
 import { showToast } from '../components/Toast.jsx'
@@ -26,12 +27,17 @@ function usePickupIndicator() {
 }
 
 export default function Shop() {
-  const { products, loading } = useProducts()
+  const { kiranaId } = useParams()
+  const kirana = getKiranaById(kiranaId)
+
+  const { products: allProducts, loading } = useProducts()
   const items = useCartStore((state) => state.items)
   const total = useCartStore((state) => state.getTotal())
   const addItem = useCartStore((state) => state.addItem)
   const incrementItem = useCartStore((state) => state.incrementItem)
   const decrementItem = useCartStore((state) => state.decrementItem)
+  const favoriteIds = useFavoritesStore((state) => state.productIds)
+  const toggleFavorite = useFavoritesStore((state) => state.toggleFavorite)
 
   const [activeCategory, setActiveCategory] = useState('all')
   const [inStockOnly, setInStockOnly] = useState(false)
@@ -39,18 +45,23 @@ export default function Shop() {
 
   const pickupIndicator = usePickupIndicator()
 
+  const storeProducts = useMemo(
+    () => allProducts.filter((product) => product.kirana_id === kiranaId),
+    [allProducts, kiranaId]
+  )
+
   const filteredProducts = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase()
-    return products.filter((product) => {
+    return storeProducts.filter((product) => {
       if (activeCategory !== 'all' && product.category !== activeCategory) return false
       if (inStockOnly && product.in_stock === false) return false
       if (normalizedQuery) {
-        const haystack = `${product.name} ${product.name_hindi ?? ''}`.toLowerCase()
+        const haystack = `${product.name} ${product.description ?? ''}`.toLowerCase()
         if (!haystack.includes(normalizedQuery)) return false
       }
       return true
     })
-  }, [products, activeCategory, inStockOnly, query])
+  }, [storeProducts, activeCategory, inStockOnly, query])
 
   function quantityFor(productId) {
     return items.find((item) => item.productId === productId)?.quantity ?? 0
@@ -63,12 +74,28 @@ export default function Shop() {
     }
   }
 
+  if (!kirana) {
+    return (
+      <div className="mx-auto max-w-content px-5 md:px-8 lg:px-12">
+        <EmptyState
+          title="Store not found"
+          message="That kirana doesn't exist, or the link is out of date."
+          actionLabel="Find a store"
+          actionTo="/stores"
+        />
+      </div>
+    )
+  }
+
   return (
     <div>
       <div className="sticky top-20 z-30 border-b border-border bg-bg/95 backdrop-blur-sm">
         <div className="mx-auto flex max-w-content flex-wrap items-center justify-between gap-3 px-5 py-4 md:px-8 lg:px-12">
           <div>
-            <p className="font-display text-lg font-medium text-ink">{KIRANA.name}</p>
+            <Link to="/stores" className="text-xs font-medium text-ink-soft transition-colors hover:text-ink">
+              ← All stores
+            </Link>
+            <p className="text-lg font-bold text-ink">{kirana.name}</p>
             {pickupIndicator && <p className="text-sm text-ink-soft">{pickupIndicator}</p>}
           </div>
           {items.length > 0 && (
@@ -125,6 +152,8 @@ export default function Shop() {
                     onAdd={handleAdd}
                     onIncrement={incrementItem}
                     onDecrement={decrementItem}
+                    isFavorite={favoriteIds.includes(product.id)}
+                    onToggleFavorite={toggleFavorite}
                   />
                 ))}
               </div>

@@ -4,7 +4,7 @@ import { MapPin, MessageCircle, Phone } from 'lucide-react'
 import { getOrderById, updateOrderStatus } from '../hooks/useOrders.js'
 import { formatClockTime, formatRupees } from '../lib/format.js'
 import { getSlotEndTime } from '../lib/pickupSlots.js'
-import { KIRANA } from '../data/kirana.js'
+import { getKiranaById } from '../data/kiranas.js'
 import OrderStatusBadge from '../components/OrderStatusBadge.jsx'
 import EmptyState from '../components/EmptyState.jsx'
 
@@ -59,7 +59,7 @@ export default function OrderConfirmation() {
           title="Order not found"
           message="We couldn't find that order — it may have been on a different device."
           actionLabel="Browse products"
-          actionTo="/shop"
+          actionTo="/stores"
         />
       </div>
     )
@@ -68,13 +68,14 @@ export default function OrderConfirmation() {
   const items = order.items || order.order_items || []
   const pickupSlot = new Date(order.pickup_slot)
   const pickupSlotEnd = getSlotEndTime(pickupSlot)
+  const kirana = getKiranaById(order.kirana_id)
 
   return (
     <div className="mx-auto max-w-content px-5 py-14 md:px-8 lg:px-12">
       <OrderStatusBadge status={order.status} pulse={justBecameReady} />
 
-      <h1 className="mt-6 font-display text-5xl font-medium leading-tight text-ink sm:text-6xl">
-        Order confirmed
+      <h1 className="mt-6 text-5xl font-extrabold leading-[1.05] tracking-tight text-ink sm:text-6xl lowercase">
+        order confirmed.
       </h1>
       <p className="mt-2 text-ink-soft">Order #{order.id}</p>
 
@@ -86,49 +87,56 @@ export default function OrderConfirmation() {
 
       <div className="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-[1fr_360px]">
         <div className="rounded-2xl border border-border bg-surface p-6">
-          <h2 className="font-display text-lg font-medium text-ink">Your items</h2>
+          <h2 className="text-lg font-bold text-ink">Your items</h2>
           <div className="mt-4 divide-y divide-border">
             {items.map((item) => (
               <div key={item.productId || item.product_id || item.name} className="flex items-center justify-between py-3 text-sm">
                 <span className="text-ink">
                   {item.name} <span className="text-ink-soft">× {item.quantity}{item.unit}</span>
                 </span>
-                <span className="font-medium text-ink">{formatRupees(item.price_rupees * item.quantity)}</span>
+                <span className="font-mono font-semibold text-ink">{formatRupees(item.price_rupees * item.quantity)}</span>
               </div>
             ))}
           </div>
           <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
-            <span className="font-medium text-ink">Total</span>
-            <span className="text-lg font-semibold text-ink">{formatRupees(order.total)}</span>
+            <span className="font-bold text-ink">Total</span>
+            <span className="font-mono text-lg font-bold text-ink">{formatRupees(order.total)}</span>
           </div>
         </div>
 
         <div className="space-y-6">
           <div className="rounded-2xl border border-border bg-surface p-6">
-            <h2 className="font-display text-lg font-medium text-ink">Pickup</h2>
+            <h2 className="text-lg font-bold text-ink">Pickup</h2>
             <p className="mt-2 text-2xl font-medium text-ink">{formatClockTime(pickupSlot)}</p>
-            <div className="mt-4 flex items-start gap-2 text-sm text-ink-soft">
-              <MapPin size={15} className="mt-0.5 flex-shrink-0" />
-              <span>{KIRANA.address}</span>
-            </div>
-            <a
-              href={`tel:${KIRANA.phone.replace(/\s+/g, '')}`}
-              className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-accent"
-            >
-              <Phone size={15} />
-              {KIRANA.phone}
-            </a>
+            {kirana && (
+              <>
+                <p className="mt-3 text-sm font-medium text-ink">{kirana.name}</p>
+                <div className="mt-1.5 flex items-start gap-2 text-sm text-ink-soft">
+                  <MapPin size={15} className="mt-0.5 flex-shrink-0" />
+                  <span>{kirana.address}</span>
+                </div>
+                <a
+                  href={`tel:${kirana.phone.replace(/\s+/g, '')}`}
+                  className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-accent"
+                >
+                  <Phone size={15} />
+                  {kirana.phone}
+                </a>
+              </>
+            )}
           </div>
 
-          <div className="rounded-2xl border border-border bg-surface p-5">
-            <div className="mb-2 flex items-center gap-2 text-xs font-medium text-ink-soft">
-              <MessageCircle size={14} />
-              Message from {KIRANA.owner_name.split(' ')[0]} ji
+          {kirana && (
+            <div className="rounded-2xl border border-border bg-surface p-5">
+              <div className="mb-2 flex items-center gap-2 text-xs font-medium text-ink-soft">
+                <MessageCircle size={14} />
+                Message from {kirana.owner_name.split(' ')[0]}
+              </div>
+              <p className="rounded-xl rounded-tl-sm bg-bg px-4 py-3 text-sm text-ink">
+                Hi! Your order will be ready by {formatClockTime(pickupSlot)}. — {kirana.owner_name.split(' ')[0]}
+              </p>
             </div>
-            <p className="rounded-xl rounded-tl-sm bg-bg px-4 py-3 text-sm text-ink">
-              Namaste! Aap ka order {formatClockTime(pickupSlot)} tak teyar ho jayega. — {KIRANA.owner_name.split(' ')[0]} ji
-            </p>
-          </div>
+          )}
         </div>
       </div>
 

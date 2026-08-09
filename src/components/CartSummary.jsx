@@ -8,11 +8,11 @@ export default function CartSummary({ subtotal, onContinue }) {
 
   return (
     <div className="rounded-2xl border border-border bg-surface p-6">
-      <h2 className="font-display text-lg font-medium text-ink">Order summary</h2>
+      <h2 className="text-lg font-bold text-ink">Order summary</h2>
 
       <div className="mt-5 flex items-center justify-between text-sm">
-        <span className="text-ink-soft">Subtotal</span>
-        <span className="font-medium text-ink">{formatRupees(subtotal)}</span>
+        <span className="font-medium text-ink-soft">Subtotal</span>
+        <span className="font-mono font-semibold text-ink">{formatRupees(subtotal)}</span>
       </div>
 
       <div className="mt-4 flex items-center gap-2 border-t border-border pt-4 text-sm text-ink-soft">
@@ -30,7 +30,7 @@ export default function CartSummary({ subtotal, onContinue }) {
         type="button"
         onClick={onContinue}
         disabled={belowMinimum}
-        className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-accent px-5 py-3.5 text-sm font-medium text-surface transition-colors hover:bg-accent/90 disabled:cursor-not-allowed disabled:bg-ink-muted"
+        className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-accent px-5 py-3.5 text-sm font-bold text-surface transition-colors hover:bg-accent/90 disabled:cursor-not-allowed disabled:bg-ink-muted"
       >
         Choose pickup time
         <ArrowRight size={16} />

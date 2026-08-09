@@ -1,6 +1,6 @@
 import { Search } from 'lucide-react'
 
-export default function SearchBar({ value, onChange }) {
+export default function SearchBar({ value, onChange, placeholder = 'Search products' }) {
   return (
     <div className="relative">
       <Search
@@ -11,8 +11,8 @@ export default function SearchBar({ value, onChange }) {
         type="text"
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        placeholder="Search products"
-        aria-label="Search products"
+        placeholder={placeholder}
+        aria-label={placeholder}
         className="w-full rounded-full border border-border bg-surface py-3 pl-11 pr-4 text-sm text-ink placeholder:text-ink-muted focus:border-ink/30 focus:outline-none focus:ring-2 focus:ring-accent/20"
       />
     </div>

@@ -21,8 +21,8 @@ export default function CartRow({ item, onIncrement, onDecrement, onRemove }) {
       </div>
 
       <div className="min-w-0 flex-1">
-        <h3 className="truncate text-base font-medium text-ink">{item.name}</h3>
-        <p className="text-sm text-ink-soft">
+        <h3 className="truncate text-base font-bold text-ink">{item.name}</h3>
+        <p className="font-mono text-sm font-medium text-ink-soft">
           {formatRupees(item.price_rupees)} / {item.unit}
         </p>
       </div>
@@ -35,7 +35,7 @@ export default function CartRow({ item, onIncrement, onDecrement, onRemove }) {
         size="md"
       />
 
-      <p className="w-20 flex-shrink-0 text-right text-base font-semibold text-ink">
+      <p className="w-20 flex-shrink-0 text-right font-mono text-base font-bold text-ink">
         {formatRupees(lineTotal)}
       </p>
 

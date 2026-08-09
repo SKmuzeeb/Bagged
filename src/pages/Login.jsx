@@ -20,14 +20,14 @@ export default function Login() {
           <div className="flex h-14 w-14 items-center justify-center rounded-full bg-accent-soft text-accent">
             <Mail size={22} />
           </div>
-          <h1 className="mt-6 font-display text-4xl font-medium text-ink">Check your inbox</h1>
+          <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-ink lowercase">check your inbox.</h1>
           <p className="mt-3 text-ink-soft">
             We've sent a sign-in link to <span className="font-medium text-ink">{email}</span>.
           </p>
         </>
       ) : (
         <>
-          <h1 className="font-display text-4xl font-medium text-ink">Welcome</h1>
+          <h1 className="text-4xl font-extrabold tracking-tight text-ink lowercase">welcome.</h1>
           <p className="mt-3 text-ink-soft">Sign in with your email — no password.</p>
 
           <form onSubmit={handleSubmit} className="mt-8 w-full space-y-4">

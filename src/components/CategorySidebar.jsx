@@ -3,7 +3,7 @@ export default function CategorySidebar({ categories, activeCategory, onSelect, 
     <aside className="hidden lg:block lg:w-[240px] lg:flex-shrink-0">
       <div className="sticky top-24 space-y-8">
         <div>
-          <h2 className="mb-3 font-display text-lg font-medium text-ink">Categories</h2>
+          <h2 className="mb-3 text-lg font-bold text-ink">Categories</h2>
           <nav className="flex flex-col">
             {categories.map((category) => {
               const isActive = category.slug === activeCategory

@@ -7,7 +7,7 @@ const product = {
   id: 'p1',
   kirana_id: 'k1',
   name: 'Basmati Rice',
-  name_hindi: 'बासमती चावल',
+  description: 'Long-grain aromatic rice, perfect for everyday meals.',
   price_rupees: 120,
   unit: 'kg',
   step: 0.25,
@@ -19,11 +19,11 @@ const product = {
 function noop() {}
 
 describe('ProductCard', () => {
-  it('renders name, Hindi name, price, and unit', () => {
+  it('renders name, description, price, and unit', () => {
     render(<ProductCard product={product} quantity={0} onAdd={noop} onIncrement={noop} onDecrement={noop} />)
 
     expect(screen.getByText('Basmati Rice')).toBeInTheDocument()
-    expect(screen.getByText('बासमती चावल')).toBeInTheDocument()
+    expect(screen.getByText(product.description)).toBeInTheDocument()
     expect(screen.getByText('₹120')).toBeInTheDocument()
     expect(screen.getByText('/ kg')).toBeInTheDocument()
   })
@@ -33,7 +33,7 @@ describe('ProductCard', () => {
     const user = userEvent.setup()
     render(<ProductCard product={product} quantity={0} onAdd={onAdd} onIncrement={noop} onDecrement={noop} />)
 
-    await user.click(screen.getByRole('button', { name: /add basmati rice/i }))
+    await user.click(screen.getByRole('button', { name: /^add basmati rice$/i }))
 
     expect(onAdd).toHaveBeenCalledWith(product)
   })
@@ -61,5 +61,47 @@ describe('ProductCard', () => {
 
     expect(onIncrement).toHaveBeenCalledWith(product.id)
     expect(onDecrement).toHaveBeenCalledWith(product.id)
+  })
+
+  it('toggles favorite status when the heart button is clicked', async () => {
+    const onToggleFavorite = vi.fn()
+    const user = userEvent.setup()
+    render(
+      <ProductCard
+        product={product}
+        quantity={0}
+        onAdd={noop}
+        onIncrement={noop}
+        onDecrement={noop}
+        isFavorite={false}
+        onToggleFavorite={onToggleFavorite}
+      />
+    )
+
+    const favoriteButton = screen.getByRole('button', { name: /add basmati rice to favorites/i })
+    expect(favoriteButton).toHaveAttribute('aria-pressed', 'false')
+
+    await user.click(favoriteButton)
+
+    expect(onToggleFavorite).toHaveBeenCalledWith(product.id)
+  })
+
+  it('reflects an already-favorited product', () => {
+    render(
+      <ProductCard
+        product={product}
+        quantity={0}
+        onAdd={noop}
+        onIncrement={noop}
+        onDecrement={noop}
+        isFavorite
+        onToggleFavorite={noop}
+      />
+    )
+
+    expect(screen.getByRole('button', { name: /remove basmati rice from favorites/i })).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    )
   })
 })

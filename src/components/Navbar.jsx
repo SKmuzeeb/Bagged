@@ -2,9 +2,10 @@ import { Link, NavLink } from 'react-router-dom'
 import { ShoppingBag, User } from 'lucide-react'
 import { useCartStore } from '../store/cartStore.js'
 import { useAuthStore } from '../store/authStore.js'
+import LocationPicker from './LocationPicker.jsx'
 
 const NAV_LINKS = [
-  { to: '/shop', label: 'Shop' },
+  { to: '/stores', label: 'Shop' },
   { to: '/#how-it-works', label: 'How it works' },
   { to: '/orders', label: 'Orders' },
 ]
@@ -16,14 +17,16 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-40 h-20 border-b border-border bg-surface/80 backdrop-blur-md">
       <div className="mx-auto flex h-full max-w-content items-center justify-between px-5 md:px-8 lg:px-12">
-        <Link
-          to="/"
-          className="flex items-baseline gap-[3px] text-2xl font-black tracking-tight text-[#FF3D2E]"
-          style={{ fontFamily: "'Arial Black', 'Helvetica Neue', sans-serif" }}
-        >
-          zippd
-          <span className="h-[7px] w-[7px] flex-shrink-0 translate-y-[-2px] rounded-full bg-[#FFD400]" aria-hidden="true" />
-        </Link>
+        <div className="flex flex-col items-start gap-0.5">
+          <Link
+            to="/"
+            className="flex items-baseline gap-[3px] font-manrope text-2xl font-extrabold tracking-tight text-accent"
+          >
+            zippd
+            <span className="h-[7px] w-[7px] flex-shrink-0 translate-y-[-2px] rounded-full bg-electric" aria-hidden="true" />
+          </Link>
+          <LocationPicker />
+        </div>
 
         <nav className="hidden items-center gap-8 md:flex">
           {NAV_LINKS.map((link) => (

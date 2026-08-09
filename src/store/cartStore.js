@@ -45,7 +45,7 @@ export const useCartStore = create(
               {
                 productId: productToAdd.id,
                 name: productToAdd.name,
-                name_hindi: productToAdd.name_hindi,
+                description: productToAdd.description,
                 price_rupees: productToAdd.price_rupees,
                 unit: productToAdd.unit,
                 step,

@@ -1,8 +1,16 @@
-import { Plus } from 'lucide-react'
+import { Heart, Plus } from 'lucide-react'
 import QuantityStepper from './QuantityStepper.jsx'
 import { formatRupees } from '../lib/format.js'
 
-export default function ProductCard({ product, quantity = 0, onAdd, onIncrement, onDecrement }) {
+export default function ProductCard({
+  product,
+  quantity = 0,
+  onAdd,
+  onIncrement,
+  onDecrement,
+  isFavorite = false,
+  onToggleFavorite,
+}) {
   const outOfStock = product.in_stock === false
 
   return (
@@ -26,6 +34,23 @@ export default function ProductCard({ product, quantity = 0, onAdd, onIncrement,
           <span className="absolute left-2.5 top-2.5 rounded-full bg-ink/90 px-2.5 py-1 text-[11px] font-medium text-surface">
             Out of stock
           </span>
+        )}
+
+        {onToggleFavorite && (
+          <button
+            type="button"
+            onClick={() => onToggleFavorite(product.id)}
+            aria-label={isFavorite ? `Remove ${product.name} from favorites` : `Add ${product.name} to favorites`}
+            aria-pressed={isFavorite}
+            className="absolute right-2.5 top-2.5 flex h-8 w-8 items-center justify-center rounded-full bg-white/70 text-ink transition-colors hover:bg-white/90"
+          >
+            <Heart
+              size={15}
+              strokeWidth={2}
+              fill={isFavorite ? 'currentColor' : 'none'}
+              className={isFavorite ? 'text-accent' : 'text-ink-soft'}
+            />
+          </button>
         )}
 
         <div className="absolute bottom-2.5 right-2.5">
@@ -61,11 +86,13 @@ export default function ProductCard({ product, quantity = 0, onAdd, onIncrement,
       </div>
 
       <div className="mt-3 space-y-0.5">
-        <h3 className="text-lg font-medium leading-snug text-ink">{product.name}</h3>
-        {product.name_hindi && <p className="text-sm text-ink-soft">{product.name_hindi}</p>}
-        <p className="pt-1 text-base">
-          <span className="font-semibold text-ink">{formatRupees(product.price_rupees)}</span>{' '}
-          <span className="text-sm text-ink-soft">/ {product.unit}</span>
+        <h3 className="text-lg font-bold leading-snug text-ink">{product.name}</h3>
+        {product.description && (
+          <p className="line-clamp-2 text-sm font-medium text-ink-soft">{product.description}</p>
+        )}
+        <p className="pt-1">
+          <span className="font-mono text-lg font-bold text-ink">{formatRupees(product.price_rupees)}</span>{' '}
+          <span className="font-mono text-sm font-medium text-ink-soft">/ {product.unit}</span>
         </p>
       </div>
     </div>

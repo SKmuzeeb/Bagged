@@ -14,23 +14,35 @@ export default {
     },
     extend: {
       colors: {
-        bg: '#FAF7F2',
+        // Zippd design system: warm cream canvas kept intentionally, ink /
+        // accent / success / border pushed to the bolder Gen-Z palette.
+        // These are the real, global tokens now — every page reads them
+        // (a page only looks "old" where it still opts into `font-display`
+        // for Fraunces instead of `font-manrope`).
+        bg: {
+          DEFAULT: '#FAF7F2',
+          alt: '#F5EFE7',
+        },
         surface: '#FFFFFF',
         ink: {
-          DEFAULT: '#1A1A1A',
-          soft: '#6B6B6B',
-          muted: '#A8A8A8',
+          DEFAULT: '#0A0A0A',
+          soft: '#6B7280',
+          muted: '#9CA3AF',
         },
         accent: {
-          DEFAULT: '#E85D3C',
-          soft: '#FCEBE5',
+          DEFAULT: '#FF3D2E',
+          hover: '#E5321F',
+          soft: '#FFECEA',
         },
-        success: '#2D6A4F',
-        border: '#ECE7DE',
+        electric: '#FFD400',
+        success: '#00C853',
+        border: '#E8E2D6',
       },
       fontFamily: {
-        display: ['Fraunces', 'ui-serif', 'Georgia', 'serif'],
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        sans: ['Manrope', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['"Bricolage Grotesque"', 'Manrope', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+        manrope: ['Manrope', 'system-ui', '-apple-system', 'sans-serif'],
       },
       maxWidth: {
         content: '1280px',

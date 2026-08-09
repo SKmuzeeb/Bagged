@@ -1,61 +1,73 @@
 import { getProductImage } from '../lib/imageMap.js'
-import { KIRANA } from './kirana.js'
+import { KIRANAS } from './kiranas.js'
 
-function product(spec) {
-  return {
-    kirana_id: KIRANA.id,
-    in_stock: true,
-    min_order_qty: 1,
-    ...spec,
-    image_url: getProductImage(spec.name),
-  }
+// The catalog every kirana draws from — real neighborhood stores mostly
+// stock the same staples, so each store gets this same item list, priced
+// and stocked a little differently (see KIRANA_CATALOG_CONFIG below).
+const PRODUCT_TEMPLATE = [
+  { key: 'rice', name: 'Basmati Rice', description: 'Long-grain aromatic rice, perfect for everyday meals.', category: 'staples', unit: 'kg', step: 0.25, basePrice: 120 },
+  { key: 'atta', name: 'Wheat Atta', description: 'Whole wheat flour, stone-ground for soft rotis.', category: 'staples', unit: 'kg', step: 0.25, basePrice: 55 },
+  { key: 'toor_dal', name: 'Toor Dal', description: 'Split pigeon peas, a kitchen staple for daily dal.', category: 'staples', unit: 'kg', step: 0.25, basePrice: 140 },
+  { key: 'sugar', name: 'Sugar', description: 'Fine white sugar for tea, coffee, and baking.', category: 'staples', unit: 'kg', step: 0.25, basePrice: 45 },
+  { key: 'salt', name: 'Salt', description: 'Iodized table salt for everyday cooking.', category: 'staples', unit: 'kg', step: 0.25, basePrice: 22 },
+  { key: 'bread', name: 'Bread', description: 'Soft sliced bread, baked fresh daily.', category: 'staples', unit: 'pack', step: 1, basePrice: 45 },
+
+  { key: 'sunflower_oil', name: 'Sunflower Oil', description: 'Light, refined cooking oil for everyday frying.', category: 'oils', unit: 'l', step: 0.25, basePrice: 150 },
+  { key: 'mustard_oil', name: 'Mustard Oil', description: 'Cold-pressed oil with a bold, pungent flavor.', category: 'oils', unit: 'l', step: 0.25, basePrice: 165 },
+
+  { key: 'tomato', name: 'Tomato', description: 'Fresh, ripe tomatoes for cooking and salads.', category: 'vegetables', unit: 'kg', step: 0.25, basePrice: 30 },
+  { key: 'onion', name: 'Onion', description: 'Fresh onions, a base for most everyday dishes.', category: 'vegetables', unit: 'kg', step: 0.25, basePrice: 35 },
+  { key: 'potato', name: 'Potato', description: 'All-purpose potatoes for curries, fries, and more.', category: 'vegetables', unit: 'kg', step: 0.25, basePrice: 25 },
+  { key: 'green_chilli', name: 'Green Chilli', description: 'Fresh green chillies for heat and flavor.', category: 'vegetables', unit: 'kg', step: 0.25, basePrice: 60 },
+  { key: 'coriander', name: 'Coriander', description: 'Fresh coriander leaves for garnish and flavor.', category: 'vegetables', unit: 'pack', step: 1, basePrice: 10 },
+  { key: 'ginger', name: 'Ginger', description: 'Fresh ginger root for cooking and tea.', category: 'vegetables', unit: 'kg', step: 0.25, basePrice: 90 },
+  { key: 'garlic', name: 'Garlic', description: 'Fresh garlic bulbs, a kitchen essential.', category: 'vegetables', unit: 'kg', step: 0.25, basePrice: 110 },
+
+  { key: 'milk', name: 'Milk', description: 'Fresh full-cream milk, delivered daily.', category: 'dairy', unit: 'l', step: 0.5, basePrice: 32 },
+  { key: 'curd', name: 'Curd', description: 'Fresh, thick homestyle yogurt.', category: 'dairy', unit: 'pack', step: 1, basePrice: 40 },
+  { key: 'paneer', name: 'Paneer', description: 'Soft cottage cheese, ideal for curries.', category: 'dairy', unit: 'kg', step: 0.25, basePrice: 320 },
+  { key: 'ghee', name: 'Ghee', description: 'Pure clarified butter with a rich, nutty aroma.', category: 'dairy', unit: 'kg', step: 0.25, basePrice: 550 },
+  { key: 'butter', name: 'Butter', description: 'Creamy, salted table butter.', category: 'dairy', unit: 'pack', step: 1, basePrice: 250 },
+  { key: 'eggs', name: 'Eggs', description: 'Farm-fresh eggs, sold by the half-dozen.', category: 'dairy', unit: 'pcs', step: 1, basePrice: 7, minOrderQty: 6 },
+
+  { key: 'maggi', name: 'Maggi Noodles', description: 'Quick-cooking instant noodles with masala flavor.', category: 'snacks', unit: 'pcs', step: 1, basePrice: 14 },
+  { key: 'parle_g', name: 'Parle-G Biscuits', description: 'Classic glucose biscuits, a household favorite.', category: 'snacks', unit: 'pack', step: 1, basePrice: 10 },
+  { key: 'chips', name: 'Potato Chips', description: 'Crispy, salted potato chips.', category: 'snacks', unit: 'pack', step: 1, basePrice: 20 },
+  { key: 'mixture', name: 'Mixture Snacks', description: 'A spicy, crunchy mix of fried snacks.', category: 'snacks', unit: 'pack', step: 1, basePrice: 45 },
+
+  { key: 'tea', name: 'Tea Leaves', description: 'Strong black tea leaves for a proper cup of chai.', category: 'beverages', unit: 'pack', step: 1, basePrice: 180 },
+  { key: 'coffee', name: 'Filter Coffee', description: 'Roasted and ground coffee for a classic filter brew.', category: 'beverages', unit: 'pack', step: 1, basePrice: 220 },
+
+  { key: 'soap', name: 'Soap Bar', description: 'Everyday bathing soap bar.', category: 'household', unit: 'pcs', step: 1, basePrice: 35 },
+  { key: 'detergent', name: 'Detergent Powder', description: 'All-purpose laundry detergent powder.', category: 'household', unit: 'pack', step: 1, basePrice: 95 },
+  { key: 'toothpaste', name: 'Toothpaste', description: 'Everyday fluoride toothpaste for daily care.', category: 'household', unit: 'pcs', step: 1, basePrice: 55 },
+]
+
+// Real kirana stores mostly carry the same staples, but pricing and
+// day-to-day stock varies store to store — this is what makes browsing a
+// second or third store feel like an actual different shop.
+const KIRANA_CATALOG_CONFIG = {
+  k1: { priceMultiplier: 1.0, outOfStock: ['garlic', 'mixture'] },
+  k2: { priceMultiplier: 1.1, outOfStock: ['ginger'] },
+  k3: { priceMultiplier: 1.2, outOfStock: ['paneer', 'ghee'] },
+  k4: { priceMultiplier: 0.9, outOfStock: ['eggs'] },
+  k5: { priceMultiplier: 1.05, outOfStock: ['curd', 'butter'] },
 }
 
-// 30 products, matching supabase/tayaar.sql, so demo mode and a connected
-// Supabase project always show the same catalog. This is the data source
-// the app runs on out of the box, before any Supabase project exists.
-export const SAMPLE_PRODUCTS = [
-  // Staples
-  product({ id: 'p1', name: 'Basmati Rice', name_hindi: 'बासमती चावल', category: 'staples', price_rupees: 120, unit: 'kg', step: 0.25 }),
-  product({ id: 'p2', name: 'Wheat Atta', name_hindi: 'गेहूं का आटा', category: 'staples', price_rupees: 55, unit: 'kg', step: 0.25 }),
-  product({ id: 'p3', name: 'Toor Dal', name_hindi: 'तूर दाल', category: 'staples', price_rupees: 140, unit: 'kg', step: 0.25 }),
-  product({ id: 'p4', name: 'Sugar', name_hindi: 'चीनी', category: 'staples', price_rupees: 45, unit: 'kg', step: 0.25 }),
-  product({ id: 'p5', name: 'Salt', name_hindi: 'नमक', category: 'staples', price_rupees: 22, unit: 'kg', step: 0.25 }),
-  product({ id: 'p6', name: 'Bread', name_hindi: 'ब्रेड', category: 'staples', price_rupees: 45, unit: 'pack', step: 1 }),
+export const SAMPLE_PRODUCTS = KIRANAS.flatMap((kirana) => {
+  const config = KIRANA_CATALOG_CONFIG[kirana.id] ?? { priceMultiplier: 1, outOfStock: [] }
 
-  // Oils
-  product({ id: 'p7', name: 'Sunflower Oil', name_hindi: 'सूरजमुखी तेल', category: 'oils', price_rupees: 150, unit: 'l', step: 0.25 }),
-  product({ id: 'p8', name: 'Mustard Oil', name_hindi: 'सरसों तेल', category: 'oils', price_rupees: 165, unit: 'l', step: 0.25 }),
-
-  // Vegetables
-  product({ id: 'p9', name: 'Tomato', name_hindi: 'टमाटर', category: 'vegetables', price_rupees: 30, unit: 'kg', step: 0.25 }),
-  product({ id: 'p10', name: 'Onion', name_hindi: 'प्याज़', category: 'vegetables', price_rupees: 35, unit: 'kg', step: 0.25 }),
-  product({ id: 'p11', name: 'Potato', name_hindi: 'आलू', category: 'vegetables', price_rupees: 25, unit: 'kg', step: 0.25 }),
-  product({ id: 'p12', name: 'Green Chilli', name_hindi: 'हरी मिर्च', category: 'vegetables', price_rupees: 60, unit: 'kg', step: 0.25 }),
-  product({ id: 'p13', name: 'Coriander', name_hindi: 'धनिया पत्ता', category: 'vegetables', price_rupees: 10, unit: 'pack', step: 1 }),
-  product({ id: 'p14', name: 'Ginger', name_hindi: 'अदरक', category: 'vegetables', price_rupees: 90, unit: 'kg', step: 0.25 }),
-  product({ id: 'p15', name: 'Garlic', name_hindi: 'लहसुन', category: 'vegetables', price_rupees: 110, unit: 'kg', step: 0.25, in_stock: false }),
-
-  // Dairy
-  product({ id: 'p16', name: 'Milk', name_hindi: 'दूध', category: 'dairy', price_rupees: 32, unit: 'l', step: 0.5 }),
-  product({ id: 'p17', name: 'Curd', name_hindi: 'दही', category: 'dairy', price_rupees: 40, unit: 'pack', step: 1 }),
-  product({ id: 'p18', name: 'Paneer', name_hindi: 'पनीर', category: 'dairy', price_rupees: 320, unit: 'kg', step: 0.25 }),
-  product({ id: 'p19', name: 'Ghee', name_hindi: 'घी', category: 'dairy', price_rupees: 550, unit: 'kg', step: 0.25 }),
-  product({ id: 'p20', name: 'Butter', name_hindi: 'मक्खन', category: 'dairy', price_rupees: 250, unit: 'pack', step: 1 }),
-  product({ id: 'p21', name: 'Eggs', name_hindi: 'अंडा', category: 'dairy', price_rupees: 7, unit: 'pcs', step: 1, min_order_qty: 6 }),
-
-  // Snacks
-  product({ id: 'p22', name: 'Maggi Noodles', name_hindi: 'मैगी नूडल्स', category: 'snacks', price_rupees: 14, unit: 'pcs', step: 1 }),
-  product({ id: 'p23', name: 'Parle-G Biscuits', name_hindi: 'पार्ले-जी बिस्कुट', category: 'snacks', price_rupees: 10, unit: 'pack', step: 1 }),
-  product({ id: 'p24', name: 'Potato Chips', name_hindi: 'आलू चिप्स', category: 'snacks', price_rupees: 20, unit: 'pack', step: 1 }),
-  product({ id: 'p25', name: 'Mixture Snacks', name_hindi: 'मिक्सचर', category: 'snacks', price_rupees: 45, unit: 'pack', step: 1, in_stock: false }),
-
-  // Beverages
-  product({ id: 'p26', name: 'Tea Leaves', name_hindi: 'चाय पत्ती', category: 'beverages', price_rupees: 180, unit: 'pack', step: 1 }),
-  product({ id: 'p27', name: 'Filter Coffee', name_hindi: 'फिल्टर कॉफी', category: 'beverages', price_rupees: 220, unit: 'pack', step: 1 }),
-
-  // Household
-  product({ id: 'p28', name: 'Soap Bar', name_hindi: 'साबुन', category: 'household', price_rupees: 35, unit: 'pcs', step: 1 }),
-  product({ id: 'p29', name: 'Detergent Powder', name_hindi: 'डिटर्जेंट पाउडर', category: 'household', price_rupees: 95, unit: 'pack', step: 1 }),
-  product({ id: 'p30', name: 'Toothpaste', name_hindi: 'टूथपेस्ट', category: 'household', price_rupees: 55, unit: 'pcs', step: 1 }),
-]
+  return PRODUCT_TEMPLATE.map((item) => ({
+    id: `${kirana.id}-${item.key}`,
+    kirana_id: kirana.id,
+    name: item.name,
+    description: item.description,
+    category: item.category,
+    unit: item.unit,
+    step: item.step,
+    min_order_qty: item.minOrderQty ?? 1,
+    price_rupees: Math.round(item.basePrice * config.priceMultiplier),
+    in_stock: !config.outOfStock.includes(item.key),
+    image_url: getProductImage(item.name),
+  }))
+})

@@ -38,7 +38,7 @@ export async function createOrder(orderInput) {
             order_id: id,
             product_id: item.productId,
             name: item.name,
-            name_hindi: item.name_hindi,
+            description: item.description,
             price_rupees: item.price_rupees,
             unit: item.unit,
             quantity: item.quantity,

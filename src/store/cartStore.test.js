@@ -5,7 +5,7 @@ const kgProduct = {
   id: 'p1',
   kirana_id: 'k1',
   name: 'Basmati Rice',
-  name_hindi: 'बासमती चावल',
+  description: 'Long-grain aromatic rice, perfect for everyday meals.',
   price_rupees: 100,
   unit: 'kg',
   step: 0.25,

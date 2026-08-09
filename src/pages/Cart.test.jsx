@@ -8,7 +8,7 @@ import { useCartStore } from '../store/cartStore.js'
 const kgItem = {
   productId: 'p1',
   name: 'Basmati Rice',
-  name_hindi: 'बासमती चावल',
+  description: 'Long-grain aromatic rice, perfect for everyday meals.',
   price_rupees: 120,
   unit: 'kg',
   step: 0.25,

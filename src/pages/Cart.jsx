@@ -19,7 +19,7 @@ export default function Cart() {
           title="Your bag is empty"
           message="Find something good from your local kirana."
           actionLabel="Browse products"
-          actionTo="/shop"
+          actionTo="/stores"
         />
       </div>
     )
@@ -27,7 +27,7 @@ export default function Cart() {
 
   return (
     <div className="mx-auto max-w-content px-5 py-12 md:px-8 lg:px-12">
-      <h1 className="mb-8 font-display text-4xl font-medium text-ink">Your bag</h1>
+      <h1 className="mb-8 text-4xl font-extrabold tracking-tight text-ink lowercase">your bag.</h1>
 
       <div className="flex flex-col gap-10 lg:flex-row lg:items-start">
         <div className="min-w-0 flex-1 lg:w-[60%]">
