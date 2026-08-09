@@ -16,8 +16,13 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-40 h-20 border-b border-border bg-surface/80 backdrop-blur-md">
       <div className="mx-auto flex h-full max-w-content items-center justify-between px-5 md:px-8 lg:px-12">
-        <Link to="/" className="font-display text-2xl font-medium tracking-tight text-ink">
-          Tayaar
+        <Link
+          to="/"
+          className="flex items-baseline gap-[3px] text-2xl font-black tracking-tight text-[#FF3D2E]"
+          style={{ fontFamily: "'Arial Black', 'Helvetica Neue', sans-serif" }}
+        >
+          zippd
+          <span className="h-[7px] w-[7px] flex-shrink-0 translate-y-[-2px] rounded-full bg-[#FFD400]" aria-hidden="true" />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">

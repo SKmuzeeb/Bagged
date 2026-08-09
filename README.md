@@ -1,4 +1,4 @@
-# Tayaar
+# zippd
 
 A click-and-collect platform for local Indian kirana (neighborhood grocery) stores. Customers browse a kirana's products, order ahead, and pick up in-store at a chosen time. No delivery.
 
@@ -23,9 +23,9 @@ Editorial, photographic, and unhurried — closer to a well-designed cookbook th
 
 ## Fallback / demo mode — this is the important part
 
-If `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are not set, Tayaar runs entirely on local data:
+If `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are not set, zippd runs entirely on local data:
 
-- Products come from `src/data/sampleProducts.js` (30 items, same catalog as `supabase/seed.sql`).
+- Products come from `src/data/sampleProducts.js` (30 items, same catalog as `supabase/tayaar.sql`).
 - Orders are created, read, and updated in the browser's `localStorage` instead of Supabase.
 - Sign-in simulates the "check your inbox" flow without sending anything.
 
@@ -42,8 +42,8 @@ Open the printed local URL. That's it — the app is fully interactive in demo m
 
 ### Connecting Supabase (optional)
 
-1. Create a Supabase project.
-2. In the SQL editor, run `supabase/schema.sql`, then `supabase/seed.sql`.
+1. Create a Supabase project (or a local Postgres database).
+2. Run `supabase/tayaar.sql` against it — the Supabase SQL editor, `psql -f supabase/tayaar.sql`, or `supabase db reset` with it as a migration all work. It's one file covering every table, index, RLS policy, the new-user trigger, and the seed data (one kirana + 30 products) for every page in the app. Safe to re-run.
 3. Copy `.env.example` to `.env` and fill in your project's URL and anon key:
    ```
    VITE_SUPABASE_URL=https://your-project.supabase.co

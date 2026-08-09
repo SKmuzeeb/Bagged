@@ -1,5 +1,5 @@
 // The single seeded kirana this demo revolves around. Mirrors the row
-// inserted by supabase/seed.sql.
+// inserted by supabase/tayaar.sql.
 export const KIRANA = {
   id: 'k1',
   name: 'Rakesh Kirana Store',

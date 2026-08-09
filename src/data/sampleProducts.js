@@ -11,7 +11,7 @@ function product(spec) {
   }
 }
 
-// 30 products, matching supabase/seed.sql, so demo mode and a connected
+// 30 products, matching supabase/tayaar.sql, so demo mode and a connected
 // Supabase project always show the same catalog. This is the data source
 // the app runs on out of the box, before any Supabase project exists.
 export const SAMPLE_PRODUCTS = [

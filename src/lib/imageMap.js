@@ -1,5 +1,5 @@
 // Canonical product name → image URL map, shared by sampleProducts.js and
-// supabase/seed.sql (kept in sync by hand — both describe the same demo
+// supabase/tayaar.sql (kept in sync by hand — both describe the same demo
 // catalog) so local demo mode and a connected Supabase project look identical.
 export const IMAGE_MAP = {
   'Basmati Rice': 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&q=80',

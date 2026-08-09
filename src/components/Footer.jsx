@@ -2,7 +2,13 @@ export default function Footer() {
   return (
     <footer className="border-t border-border py-8">
       <div className="mx-auto flex max-w-content flex-col items-center justify-between gap-2 px-5 text-sm text-ink-soft md:flex-row md:px-8 lg:px-12">
-        <span className="font-display text-base text-ink">Tayaar</span>
+        <span
+          className="flex items-baseline gap-[2px] text-base font-black tracking-tight text-[#FF3D2E]"
+          style={{ fontFamily: "'Arial Black', 'Helvetica Neue', sans-serif" }}
+        >
+          zippd
+          <span className="h-[5px] w-[5px] flex-shrink-0 translate-y-[-1px] rounded-full bg-[#FFD400]" aria-hidden="true" />
+        </span>
         <span>A portfolio demo — no real orders, no real payments.</span>
         <span>Built with React, Vite &amp; Supabase.</span>
       </div>
