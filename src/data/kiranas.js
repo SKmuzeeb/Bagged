@@ -63,9 +63,5 @@ export const KIRANAS = [
   },
 ]
 
-export function getKiranaById(id) {
-  return KIRANAS.find((kirana) => kirana.id === id) || null
-}
-
 // The store spotlighted on the landing page's "Meet your kirana" section.
 export const FEATURED_KIRANA = KIRANAS[0]

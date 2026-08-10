@@ -5,7 +5,7 @@ import { useProducts } from '../hooks/useProducts.js'
 import { useCartStore } from '../store/cartStore.js'
 import { useFavoritesStore } from '../store/favoritesStore.js'
 import { CATEGORIES } from '../data/categories.js'
-import { getKiranaById } from '../data/kiranas.js'
+import { useKirana } from '../hooks/useKiranas.js'
 import { getPickupSlots } from '../lib/pickupSlots.js'
 import { formatClockTime, formatRupees } from '../lib/format.js'
 import { showToast } from '../components/Toast.jsx'
@@ -28,9 +28,9 @@ function usePickupIndicator() {
 
 export default function Shop() {
   const { kiranaId } = useParams()
-  const kirana = getKiranaById(kiranaId)
+  const { kirana, loading: kiranaLoading } = useKirana(kiranaId)
 
-  const { products: allProducts, loading } = useProducts()
+  const { products: storeProducts, loading: productsLoading } = useProducts(kiranaId)
   const items = useCartStore((state) => state.items)
   const total = useCartStore((state) => state.getTotal())
   const addItem = useCartStore((state) => state.addItem)
@@ -44,11 +44,6 @@ export default function Shop() {
   const [query, setQuery] = useState('')
 
   const pickupIndicator = usePickupIndicator()
-
-  const storeProducts = useMemo(
-    () => allProducts.filter((product) => product.kirana_id === kiranaId),
-    [allProducts, kiranaId]
-  )
 
   const filteredProducts = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase()
@@ -72,6 +67,10 @@ export default function Shop() {
     if (!added) {
       showToast(`${product.name} is out of stock right now.`, 'error')
     }
+  }
+
+  if (kiranaLoading) {
+    return null
   }
 
   if (!kirana) {
@@ -131,7 +130,7 @@ export default function Shop() {
               <SearchBar value={query} onChange={setQuery} />
             </div>
 
-            {loading ? (
+            {productsLoading ? (
               <div className="grid grid-cols-2 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:gap-10">
                 {Array.from({ length: 8 }).map((_, index) => (
                   <SkeletonProductCard key={index} />

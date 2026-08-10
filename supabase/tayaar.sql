@@ -42,12 +42,17 @@ create table if not exists profiles (
   created_at timestamptz not null default now()
 );
 
--- Landing, Shop, Checkout, Order Confirmation: the kirana being ordered from.
+-- Landing, Stores, Shop, Checkout, Order Confirmation: the kirana being
+-- ordered from. `locality` + `city` back the Stores search page and the
+-- navbar location picker, which filters kiranas down to the customer's city
+-- so nobody orders from a store in a city they can't walk into.
 create table if not exists kiranas (
   id uuid primary key default gen_random_uuid(),
   name text not null unique,
   owner_name text not null,
   address text not null,
+  locality text not null,
+  city text not null,
   phone text not null,
   tagline text,
   hours_open time not null default '07:00',
@@ -110,6 +115,9 @@ create table if not exists order_items (
 -- Indexes
 -- ─────────────────────────────────────────────────────────────────────────
 
+create index if not exists idx_kiranas_city
+  on kiranas (city);
+
 create index if not exists idx_products_kirana_category_stock
   on products (kirana_id, category, in_stock);
 
@@ -151,14 +159,16 @@ create trigger on_user_created
 -- mode and a connected database show identical stores, prices, and stock.
 -- ─────────────────────────────────────────────────────────────────────────
 
-insert into kiranas (name, owner_name, address, phone, tagline, hours_open, hours_close)
+insert into kiranas (name, owner_name, address, locality, city, phone, tagline, hours_open, hours_close)
 values
-  ('Rakesh Kirana Store', 'Rakesh Sharma', 'Shop 12, Gachibowli Main Road, Hyderabad 500032', '+91 98765 43210', 'Serving Gachibowli since 1998', '07:00', '22:00'),
-  ('Sharma General Store', 'Vinod Sharma', 'Shop 4, 100 Feet Road, Indiranagar, Bangalore 560038', '+91 98450 11223', 'Your corner store since 2005', '07:00', '22:00'),
-  ('Gupta Provision Store', 'Anita Gupta', 'Shop 7, Veera Desai Road, Andheri West, Mumbai 400058', '+91 98200 33445', 'Family-run since 1985', '07:00', '22:00'),
-  ('Patel Kirana & Grocers', 'Jayesh Patel', 'B-22, Satellite Road, Ahmedabad 380015', '+91 98980 55667', 'Quality groceries since 1992', '07:00', '22:00'),
-  ('Singh Super Bazaar', 'Harpreet Singh', 'Shop 15, Central Market, Lajpat Nagar, Delhi 110024', '+91 98100 77889', 'Neighborhood favorite since 2001', '07:00', '22:00')
-on conflict do nothing;
+  ('Rakesh Kirana Store', 'Rakesh Sharma', 'Shop 12, Gachibowli Main Road, Hyderabad 500032', 'Gachibowli, Hyderabad', 'Hyderabad', '+91 98765 43210', 'Serving Gachibowli since 1998', '07:00', '22:00'),
+  ('Sharma General Store', 'Vinod Sharma', 'Shop 4, 100 Feet Road, Indiranagar, Bangalore 560038', 'Indiranagar, Bangalore', 'Bangalore', '+91 98450 11223', 'Your corner store since 2005', '07:00', '22:00'),
+  ('Gupta Provision Store', 'Anita Gupta', 'Shop 7, Veera Desai Road, Andheri West, Mumbai 400058', 'Andheri West, Mumbai', 'Mumbai', '+91 98200 33445', 'Family-run since 1985', '07:00', '22:00'),
+  ('Patel Kirana & Grocers', 'Jayesh Patel', 'B-22, Satellite Road, Ahmedabad 380015', 'Satellite, Ahmedabad', 'Ahmedabad', '+91 98980 55667', 'Quality groceries since 1992', '07:00', '22:00'),
+  ('Singh Super Bazaar', 'Harpreet Singh', 'Shop 15, Central Market, Lajpat Nagar, Delhi 110024', 'Lajpat Nagar, Delhi', 'Delhi', '+91 98100 77889', 'Neighborhood favorite since 2001', '07:00', '22:00')
+on conflict (name) do update set
+  locality = excluded.locality,
+  city = excluded.city;
 
 -- Real kirana stores mostly carry the same staples — each store below gets
 -- the same 30-item template, priced with its own multiplier and missing a

@@ -6,7 +6,7 @@ import { createOrder } from '../hooks/useOrders.js'
 import { validateOrder } from '../lib/orderValidation.js'
 import { getPickupSlots } from '../lib/pickupSlots.js'
 import { formatRupees } from '../lib/format.js'
-import { getKiranaById } from '../data/kiranas.js'
+import { useKirana } from '../hooks/useKiranas.js'
 import { showToast } from '../components/Toast.jsx'
 import PickupSlotPicker from '../components/PickupSlotPicker.jsx'
 
@@ -16,14 +16,22 @@ export default function Checkout() {
   const total = useCartStore((state) => state.getTotal())
   const cartKiranaId = useCartStore((state) => state.kiranaId)
   const clearCart = useCartStore((state) => state.clearCart)
-  const kirana = getKiranaById(cartKiranaId)
+  const { kirana, loading: kiranaLoading } = useKirana(cartKiranaId)
 
   const slots = useMemo(() => getPickupSlots(), [])
   const [selectedSlot, setSelectedSlot] = useState(null)
   const [summaryOpen, setSummaryOpen] = useState(false)
   const [submitting, setSubmitting] = useState(false)
 
-  if (items.length === 0 || !kirana) {
+  if (items.length === 0) {
+    return <Navigate to="/cart" replace />
+  }
+
+  if (kiranaLoading) {
+    return null
+  }
+
+  if (!kirana) {
     return <Navigate to="/cart" replace />
   }
 

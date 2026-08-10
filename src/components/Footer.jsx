@@ -7,7 +7,7 @@ export default function Footer() {
           <span className="h-[5px] w-[5px] flex-shrink-0 translate-y-[-1px] rounded-full bg-electric" aria-hidden="true" />
         </span>
         <span>A portfolio demo — no real orders, no real payments.</span>
-        <span>Built with React, Vite &amp; Supabase.</span>
+        <span>Built with React, Vite &amp; Node.js.</span>
       </div>
     </footer>
   )

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowRight, MapPin, Search, Store } from 'lucide-react'
-import { KIRANAS } from '../data/kiranas.js'
+import { useKiranas } from '../hooks/useKiranas.js'
 import { useLocationStore } from '../store/locationStore.js'
 import EmptyState from '../components/EmptyState.jsx'
 
@@ -59,12 +59,13 @@ export default function Stores() {
   const [query, setQuery] = useState('')
   const navigate = useNavigate()
   const city = useLocationStore((state) => state.city)
+  const { kiranas, loading } = useKiranas()
 
   const hasQuery = query.trim().length > 0
 
   const filteredKiranas = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase()
-    const scoped = city ? KIRANAS.filter((kirana) => kirana.city === city) : KIRANAS
+    const scoped = city ? kiranas.filter((kirana) => kirana.city === city) : kiranas
 
     if (!normalizedQuery) return scoped
 
@@ -72,7 +73,7 @@ export default function Stores() {
       const haystack = `${kirana.name} ${kirana.locality} ${kirana.address}`.toLowerCase()
       return haystack.includes(normalizedQuery)
     })
-  }, [query, city])
+  }, [query, city, kiranas])
 
   // Without a city, "browse everything" is exactly how someone ends up
   // ordering from a store they can never walk into — so the default grid
@@ -113,11 +114,16 @@ export default function Stores() {
 
       {/* Store grid */}
       <section className="mx-auto max-w-[1280px] px-5 pb-16 md:px-8 md:pb-20 lg:px-12">
-        {showLocationPrompt ? (
+        {loading ? (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <div key={index} className="h-48 animate-pulse rounded-3xl bg-border" />
+            ))}
+          </div>
+        ) : showLocationPrompt ? (
           <EmptyState
             title="Set your location"
             message="Use the location picker above to find kiranas you can actually walk into for pickup."
-            variant="zip"
           />
         ) : filteredKiranas.length === 0 ? (
           <EmptyState
@@ -127,7 +133,6 @@ export default function Stores() {
                 ? `No stores match that search in ${city} yet.`
                 : 'Try a different store name or locality.'
             }
-            variant="zip"
           />
         ) : (
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">

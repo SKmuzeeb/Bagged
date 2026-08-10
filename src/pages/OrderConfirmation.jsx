@@ -4,7 +4,7 @@ import { MapPin, MessageCircle, Phone } from 'lucide-react'
 import { getOrderById, updateOrderStatus } from '../hooks/useOrders.js'
 import { formatClockTime, formatRupees } from '../lib/format.js'
 import { getSlotEndTime } from '../lib/pickupSlots.js'
-import { getKiranaById } from '../data/kiranas.js'
+import { useKirana } from '../hooks/useKiranas.js'
 import OrderStatusBadge from '../components/OrderStatusBadge.jsx'
 import EmptyState from '../components/EmptyState.jsx'
 
@@ -17,6 +17,7 @@ export default function OrderConfirmation() {
   const [order, setOrder] = useState(null)
   const [loading, setLoading] = useState(true)
   const [justBecameReady, setJustBecameReady] = useState(false)
+  const { kirana } = useKirana(order?.kirana_id)
 
   useEffect(() => {
     let cancelled = false
@@ -68,7 +69,6 @@ export default function OrderConfirmation() {
   const items = order.items || order.order_items || []
   const pickupSlot = new Date(order.pickup_slot)
   const pickupSlotEnd = getSlotEndTime(pickupSlot)
-  const kirana = getKiranaById(order.kirana_id)
 
   return (
     <div className="mx-auto max-w-content px-5 py-14 md:px-8 lg:px-12">

@@ -4,7 +4,7 @@ import { useOrders, updateOrderStatus } from '../hooks/useOrders.js'
 import { useProducts } from '../hooks/useProducts.js'
 import { useCartStore } from '../store/cartStore.js'
 import { formatClockTime, formatOrderDate, formatRupees } from '../lib/format.js'
-import { getKiranaById } from '../data/kiranas.js'
+import { useKirana } from '../hooks/useKiranas.js'
 import { showToast } from '../components/Toast.jsx'
 import OrderStatusBadge from '../components/OrderStatusBadge.jsx'
 import EmptyState from '../components/EmptyState.jsx'
@@ -18,7 +18,7 @@ function sortByPickupDesc(a, b) {
 function OrderCard({ order, onCancel, onReorder }) {
   const items = order.items || order.order_items || []
   const itemsSummary = items.map((item) => item.name).join(', ')
-  const kirana = getKiranaById(order.kirana_id)
+  const { kirana } = useKirana(order.kirana_id)
 
   return (
     <div className="rounded-3xl border-2 border-border bg-surface p-6">

@@ -10,6 +10,7 @@ import Checkout from './pages/Checkout.jsx'
 import OrderConfirmation from './pages/OrderConfirmation.jsx'
 import Orders from './pages/Orders.jsx'
 import Login from './pages/Login.jsx'
+import AuthCallback from './pages/AuthCallback.jsx'
 
 function Layout() {
   return (
@@ -37,6 +38,7 @@ export default function App() {
           <Route path="/order/:id" element={<OrderConfirmation />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
         </Route>
       </Routes>
     </BrowserRouter>
